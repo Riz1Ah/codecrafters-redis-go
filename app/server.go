@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 
 	// Uncomment this block to pass the first stage
@@ -48,44 +47,5 @@ func main() {
 
 		}(conn)
 
-		//go handleConnection(conn)
 	}
-}
-
-func handleConnection(conn net.Conn) {
-	defer conn.Close()
-
-	// create a new scanner to read data from the connection
-	scanner := bufio.NewScanner(conn)
-
-	// read the request line
-	scanner.Scan()
-	requestLine := scanner.Text()
-	fmt.Println("Request line:", requestLine)
-
-	// // read the request headers
-	// headers := make(map[string]string)
-	// for scanner.Scan() {
-	// 	headerLine := scanner.Text()
-	// 	if headerLine == "" {
-	// 		break
-	// 	}
-	// 	parts := strings.SplitN(headerLine, ":", 2)
-	// 	if len(parts) == 2 {
-	// 		headers[parts[0]] = parts[1]
-	// 	}
-	// }
-
-	// // read the request body, if any
-	// if contentLength, ok := headers["Content-Length"]; ok {
-	// 	bodyLength := contentLength
-	// 	fmt.Println("Content-Length:", bodyLength)
-	// 	body := make([]byte, int(1024))
-	// 	_, err := conn.Read(body)
-	// 	if err != nil {
-	// 		fmt.Println("Error reading request body:", err)
-	// 	} else {
-	// 		fmt.Println("Request body:", string(body))
-	// 	}
-	// }
 }
