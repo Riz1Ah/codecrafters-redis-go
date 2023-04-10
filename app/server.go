@@ -46,6 +46,5 @@ func main() {
 			}
 
 		}(conn)
-
 	}
 }
