@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	// Uncomment this block to pass the first stage
 	"net"
@@ -35,8 +36,9 @@ func main() {
 					return
 				}
 
-				fmt.Println(n, string(buf))
-				response := []byte("+PONG\r\n")
+				fmt.Println(n, processReq(buf))
+
+				response := []byte(processReq(buf))
 				_, err = c.Write(response)
 				if err != nil {
 					fmt.Println(err)
@@ -47,4 +49,23 @@ func main() {
 
 		}(conn)
 	}
+}
+
+func processReq(buf []byte) string {
+	req := string(buf)
+	reqSlice := strings.Split(req, "\r\n")
+	command := strings.ToUpper(reqSlice[2])
+	if command == "COMMAND" {
+		return "+OK\r\n"
+	}
+	if command == "PING" {
+		return "+PONG\r\n"
+	}
+	if command == "ECHO" {
+		if len(reqSlice) < 6 {
+			return "+\r\n"
+		}
+		return "+" + reqSlice[4] + " \r\n"
+	}
+	return "-Invalid Command\r\n"
 }
