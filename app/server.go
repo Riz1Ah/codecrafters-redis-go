@@ -65,7 +65,7 @@ func processReq(buf []byte) string {
 		if len(reqSlice) < 6 {
 			return "+\r\n"
 		}
-		return "+" + reqSlice[4] + " \r\n"
+		return "+" + reqSlice[4] + "\r\n"
 	}
 	return "-Invalid Command\r\n"
 }
