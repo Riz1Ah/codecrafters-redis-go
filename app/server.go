@@ -9,6 +9,8 @@ import (
 	"os"
 )
 
+var cache = make(map[string]string)
+
 func main() {
 	// You can use print statements as follows for debugging, they'll be visible when running tests.
 	fmt.Println("Logs from your program will appear here!")
@@ -66,6 +68,13 @@ func processReq(buf []byte) string {
 			return "+\r\n"
 		}
 		return "+" + reqSlice[4] + "\r\n"
+	}
+	if command == "SET" {
+		cache[reqSlice[4]] = reqSlice[6]
+		return "+OK\r\n"
+	}
+	if command == "GET" {
+		return "+" + cache[reqSlice[4]] + "\r\n"
 	}
 	return "-Invalid Command\r\n"
 }
