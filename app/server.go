@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
+	"time"
 
 	// Uncomment this block to pass the first stage
 	"net"
@@ -70,11 +72,26 @@ func processReq(buf []byte) string {
 		return "+" + reqSlice[4] + "\r\n"
 	}
 	if command == "SET" {
+		if len(reqSlice) > 8 && strings.ToUpper(reqSlice[8]) == "PX" {
+			go func(key string) string {
+				t, err := strconv.Atoi(reqSlice[10])
+				if err != nil {
+					return "Invalid expiry"
+				}
+				time.Sleep(time.Duration(t) * time.Millisecond)
+				delete(cache, key)
+				return "OK"
+			}(reqSlice[4])
+		}
 		cache[reqSlice[4]] = reqSlice[6]
 		return "+OK\r\n"
 	}
 	if command == "GET" {
-		return "+" + cache[reqSlice[4]] + "\r\n"
+		value, ok := cache[reqSlice[4]]
+		if !ok {
+			return "$-1\r\n"
+		}
+		return "+" + value + "\r\n"
 	}
 	return "-Invalid Command\r\n"
 }
